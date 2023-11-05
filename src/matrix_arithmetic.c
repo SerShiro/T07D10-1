@@ -7,7 +7,7 @@ int inputChoose(int *choose);
 void output(int **matrix, int n, int m);
 int sum(int **matrix_first, int n_first, int m_first, int **matrix_second, int n_second, int m_second,
         int **matrix_result, int *n_result, int *m_result);
-int transpose(int** matrix, int n, int m);
+int transpose(int **matrix, int n, int m);
 int mul(int **matrix_first, int n_first, int m_first, int **matrix_second, int n_second, int m_second,
         int **matrix_result, int *n_result, int *m_result);
 
@@ -79,15 +79,12 @@ int main() {
 
             break;
         case 3:
-    // int **matrix_result = malloc(m_result * n_result * sizeof(int) + m_result * sizeof(int *));
 
-    //         transpose(matrix_result, n_first, m_first);
+            transpose(matrix_first, n_first, m_first);
 
-    // free(matrix_result);
             break;
         default:
             break;
-
     }
     free(matrix_first);
     return 0;
@@ -164,21 +161,29 @@ int mul(int **matrix_first, int n_first, int m_first, int **matrix_second, int n
     return 1;
 }
 
-int transpose(int** matrix, int n, int m) {
-    if (n == m) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (i != j) {
-                    int temp = matrix[i][j];
-                    matrix[i][j] = matrix[j][i];
-                    matrix[j][i] = temp;
-                }
-            }
-        }
-    } else {
+int transpose(int **matrix, int n, int m) {
+    int **matrix_result = (int **)calloc(m, sizeof(int *));
+
+    for (int i = 0; i < m; i++) {
+        matrix_result[i] = (int *)calloc(n, sizeof(int));
     }
-    output(matrix, m, n);
-    return 1;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            matrix_result[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            matrix_result[j][i] = matrix[i][j];
+        }
+    }
+    output(matrix_result, m, n);
+    for (int i = 0; i < n; i++) {
+        free(matrix_result[i]);
+    }
+    free(matrix_result);
+    return 0;
 }
 
 void output(int **matrix, int n, int m) {
